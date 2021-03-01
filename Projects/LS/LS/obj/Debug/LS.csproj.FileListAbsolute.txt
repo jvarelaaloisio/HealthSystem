@@ -1,0 +1,6 @@
+K:\Documents\1_ TAREA\1_ DA VINCI\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\bin\Debug\LS.dll
+K:\Documents\1_ TAREA\1_ DA VINCI\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\bin\Debug\LS.pdb
+K:\Documents\1_ TAREA\1_ DA VINCI\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\obj\Debug\LS.csprojAssemblyReference.cache
+K:\Documents\1_ TAREA\1_ DA VINCI\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\obj\Debug\LS.csproj.CoreCompileInputs.cache
+K:\Documents\1_ TAREA\1_ DA VINCI\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\obj\Debug\LS.dll
+K:\Documents\1_ TAREA\1_ DA VINCI\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\obj\Debug\LS.pdb
