@@ -51,7 +51,7 @@ jobs:
         git push origin ${{ env.tag }}
 
   Release:
-    #needs: [Build, Test]
+    needs: [Build, Test]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -66,8 +66,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
-        tag_name: ${{ env.NextAutomatedTag }}
-        release_name: Release ${{ env.NextAutomatedTag }}
+        tag_name: ${{ vars.NextAutomatedTag }}
+        release_name: Release ${{ vars.NextAutomatedTag }}
         draft: false
         prerelease: false
 
