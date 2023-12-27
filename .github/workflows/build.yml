@@ -36,29 +36,35 @@ jobs:
 
   Tag:
     needs: [Build, Test]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
-    - name: Create tag
-      id: create_tag
+  
+    - name: Get latest tag
+      id: get_tag
       run: |
-        echo "tag=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-      
+        echo "CURRENT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+  
+    - name: Update tag
+      id: update_tag
+      run: |
+        echo "CURRENT_TAG=$(echo $CURRENT_TAG | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')" >> $GITHUB_ENV
+  
     - name: Push tag
       run: |
-        git tag ${{ env.tag }}
-        git push origin ${{ env.tag }}
-
+        git tag ${{ env.CURRENT_TAG }}
+        git push origin ${{ env.CURRENT_TAG }}
+        
   Release:
-    needs: [Build, Test]
+    needs: [Build, Test, Tag]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
 
     - name: Print NextAutomatedTag
-      run: echo ${{ vars.NextAutomatedTag }}
+      run: echo ${{ vars.CURRENT_TAG }}
       
     - name: Create or Update Release
       id: create_release
@@ -66,8 +72,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
-        tag_name: ${{ vars.NextAutomatedTag }}
-        release_name: Release ${{ vars.NextAutomatedTag }}
+        tag_name: ${{ vars.CURRENT_TAG }}
+        release_name: Release ${{ vars.CURRENT_TAG }}
         draft: false
         prerelease: false
 
