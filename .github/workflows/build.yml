@@ -18,7 +18,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Restore NuGet packages
-      run: nuget restore LS.sln
+      run: nuget restore Projects/LS.sln
 
     - name: Build
       run: msbuild /p:Configuration=Release LS.sln
