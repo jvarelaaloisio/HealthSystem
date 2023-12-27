@@ -28,7 +28,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4.1.1
     - name: Run Tests
       run: |
         nuget install NUnit.ConsoleRunner -Version 3.11.1
@@ -38,6 +38,8 @@ jobs:
     needs: [Build, Test]
     runs-on: windows-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
     - name: Create tag
       id: create_tag
       run: |
@@ -52,6 +54,8 @@ jobs:
     needs: [Build, Test]
     runs-on: windows-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
     - name: Print NextAutomatedTag
       run: echo ${{ env.NextAutomatedTag }}
     - name: Create Release
