@@ -28,6 +28,10 @@ jobs:
         nuget install NUnit.ConsoleRunner -Version 3.11.1
         ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
 
+  Release:
+    needs: build
+    runs-on: windows-latest
+    steps:
     # - name: Create tag
     #   id: create_tag
     #   run: |
