@@ -35,8 +35,8 @@ jobs:
         
     - name: Push tag
       run: |
-        git tag ${{ steps.create_tag.outputs.tag }}
-        git push origin ${{ steps.create_tag.outputs.tag }}
+        git tag ${{ env.tag }}
+        git push origin ${{ env.tag }}
 
     - name: Create Release
       id: create_release
