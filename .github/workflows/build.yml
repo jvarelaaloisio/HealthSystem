@@ -60,9 +60,9 @@ jobs:
     - name: Print NextAutomatedTag
       run: echo ${{ vars.NextAutomatedTag }}
       
-    - name: Create Release
+    - name: Create or Update Release
       id: create_release
-      uses: actions/create-release@v1.1.4
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
