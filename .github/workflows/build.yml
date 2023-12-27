@@ -25,8 +25,8 @@ jobs:
 
     - name: Test
       run: |
-        Install-Package NUnit.Console -Version 3.11.1
-        nunit3-console Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
+        nuget install NUnit.ConsoleRunner -Version 3.11.1
+        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
 
     - name: Create Release
       id: create_release
