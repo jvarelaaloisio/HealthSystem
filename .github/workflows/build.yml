@@ -31,7 +31,7 @@ jobs:
     - name: Create tag
       id: create_tag
       run: |
-        echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
+        echo "tag=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
         
     - name: Push tag
       run: |
@@ -44,8 +44,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
-        tag_name: ${{ steps.create_tag.outputs.tag }}
-        release_name: Release ${{ steps.create_tag.outputs.tag }}
+        tag_name: ${{ env.tag }}
+        release_name: Release ${{ env.tag }}
         draft: false
         prerelease: false
 
