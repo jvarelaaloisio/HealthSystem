@@ -8,7 +8,7 @@ namespace LS.UnitTests
 		private const int MAX_LIFE_POINTS = 10;
 		private const int OVERFLOWING_LIFE_POINTS = 20;
 		private const int NOT_KILLING_DAMAGE = 5;
-		private const int KILLING_DAMAGE = 25;
+		private const int OVERKILL_DAMAGE = 25;
 		private Damageable _damageable;
 
 		[SetUp]
@@ -22,7 +22,7 @@ namespace LS.UnitTests
 		[Test]
 		public void Constructor_GivenMaxLifePoints_HasSameMaxLifePoints()
 		{
-			Assert.AreEqual(MAX_LIFE_POINTS, _damageable.LifePoints);
+			Assert.AreEqual(MAX_LIFE_POINTS, _damageable.MaxLifePoints);
 		}
 
 		[Test]
@@ -87,7 +87,7 @@ namespace LS.UnitTests
 		[Test]
 		public void TakeDamage_GivenKillingDamage_LifePointsAreZero()
 		{
-			_damageable.TakeDamage(KILLING_DAMAGE);
+			_damageable.TakeDamage(OVERKILL_DAMAGE);
 			Assert.AreEqual(0, _damageable.LifePoints);
 		}
 
@@ -95,8 +95,18 @@ namespace LS.UnitTests
 		public void TakeDamage_GivenKillingDamage_OnDeathIsCalled()
 		{
 			bool wasCalled = false;
-			_damageable.OnDeath = () => wasCalled = true; 
-			_damageable.TakeDamage(KILLING_DAMAGE);
+			_damageable.OnDeath += () => wasCalled = true; 
+			_damageable.TakeDamage(OVERKILL_DAMAGE);
+			Assert.IsTrue(wasCalled);
+		}
+
+		[Test]
+		public void TakeDamage_GivenKillingDamageAndAllowedOverflow_OnDeathIsCalled()
+		{
+			_damageable.AllowOverflow = true;
+			bool wasCalled = false;
+			_damageable.OnDeath += () => wasCalled = true; 
+			_damageable.TakeDamage(OVERKILL_DAMAGE);
 			Assert.IsTrue(wasCalled);
 		}
 

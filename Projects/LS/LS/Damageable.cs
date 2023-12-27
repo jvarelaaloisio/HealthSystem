@@ -8,12 +8,14 @@ namespace LS
 		public bool AllowOverflow { get; set; }
 
 		private int _lifePoints;
-		public Action OnDeath;
+		public event Action OnDeath;
 
 		public int LifePoints
 		{
 			get => _lifePoints;
-			set => _lifePoints = AllowOverflow ? value : Clamp(value, 0, MaxLifePoints);
+			set => _lifePoints = AllowOverflow
+									? (value > 0 ? value : 0)
+									: Clamp(value, 0, MaxLifePoints);
 		}
 
 		public Damageable(int maxLifePoints)
@@ -42,7 +44,7 @@ namespace LS
 				OnDeath?.Invoke();
 		}
 
-		private int Clamp(int value, int min, int max)
+		private static int Clamp(int value, int min, int max)
 		{
 			if (min > max)
 				min = max;
