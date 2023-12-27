@@ -14,6 +14,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
 
+    - name: Print NextAutomatedTag
+      run: echo ${{ vars.NextAutomatedTag }} | Out-File -FilePath $env:GITHUB_ENV -Append
+
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.3.1
 
