@@ -52,13 +52,17 @@ jobs:
 
   Release:
     needs: [Build, Test]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
+
+    - name: Print NextAutomatedTag
+      run: echo ${{ env.NextAutomatedTag }}
+      
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: actions/create-release@v1.1.4
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
