@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  Build:
 
     runs-on: windows-latest
 
@@ -23,25 +23,37 @@ jobs:
     - name: Build
       run: msbuild /p:Configuration=Release Projects/LS/LS.sln
 
-    - name: Test
+  Test:
+    needs: [Build]
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Run Tests
       run: |
         nuget install NUnit.ConsoleRunner -Version 3.11.1
         ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
 
-  Release:
-    needs: build
+  Tag:
+    needs: [Build, Test]
     runs-on: windows-latest
     steps:
-    # - name: Create tag
-    #   id: create_tag
-    #   run: |
-    #     echo "tag=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-        
-    # - name: Push tag
-    #   run: |
-    #     git tag ${{ env.tag }}
-    #     git push origin ${{ env.tag }}
+    - name: Create tag
+      id: create_tag
+      run: |
+        echo "tag=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      
+    - name: Push tag
+      run: |
+        git tag ${{ env.tag }}
+        git push origin ${{ env.tag }}
 
+  Release:
+    needs: [Tag, Build, Test]
+    runs-on: windows-latest
+    steps:
+    - name: Print NextAutomatedTag
+      run: echo ${{ env.NextAutomatedTag }}
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
