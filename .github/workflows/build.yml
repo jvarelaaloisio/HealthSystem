@@ -80,13 +80,3 @@ jobs:
         asset_path: Projects/LS/LS/bin/Release/LS.dll
         asset_name: LS.dll
         asset_content_type: application/octet-stream
-
-    - name: Upload .pdb file
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Projects/LS/LS/bin/Release/LS.pdb
-        asset_name: LS.pdb
-        asset_content_type: application/octet-stream
