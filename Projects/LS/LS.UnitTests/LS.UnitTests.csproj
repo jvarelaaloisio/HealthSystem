@@ -42,7 +42,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="DamageableTests.cs" />
+        <Compile Include="HealthTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
