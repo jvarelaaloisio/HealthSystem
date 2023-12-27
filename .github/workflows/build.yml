@@ -18,15 +18,15 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Restore NuGet packages
-      run: nuget restore Projects/LS.sln
+      run: nuget restore Projects/LS/LS.sln
 
     - name: Build
-      run: msbuild /p:Configuration=Release LS.sln
+      run: msbuild /p:Configuration=Release Projects/LS/LS.sln
 
     - name: Test
       run: |
         Install-Package NUnit.Console -Version 3.11.1
-        nunit3-console LS.UnitTests/bin/Release/LS.UnitTests.dll
+        nunit3-console Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
 
     - name: Create Release
       id: create_release
