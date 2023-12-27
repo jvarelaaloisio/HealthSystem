@@ -56,8 +56,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
-    - name: Print NextAutomatedTag
-      run: echo ${{ env.NextAutomatedTag }}
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
