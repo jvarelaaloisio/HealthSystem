@@ -13,7 +13,17 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
+      
+    - name: Cache NuGet packages
+      uses: actions/cache@v3.3.2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
 
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3.1
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.3.1
 
