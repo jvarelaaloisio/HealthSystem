@@ -28,16 +28,27 @@ jobs:
         nuget install NUnit.ConsoleRunner -Version 3.11.1
         ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
 
-    #- name: Create Release
-    #  id: create_release
-    #  uses: actions/create-release@v1
-    #  env:
-    #    GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-    #  with:
-    #    tag_name: ${{ github.ref }}
-    #    release_name: Release ${{ github.ref }}
-    #    draft: false
-    #    prerelease: false
+    - name: Create tag
+      id: create_tag
+      run: |
+        echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
+        
+    - name: Push tag
+      run: |
+        git tag ${{ steps.create_tag.outputs.tag }}
+        git push origin ${{ steps.create_tag.outputs.tag }}
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.YOUR_PERSONAL_ACCESS_TOKEN }}
+      with:
+        tag_name: ${{ steps.create_tag.outputs.tag }}
+        release_name: Release ${{ steps.create_tag.outputs.tag }}
+        draft: false
+        prerelease: false
+
 
     - name: Upload .dll file
       uses: actions/upload-release-asset@v1
