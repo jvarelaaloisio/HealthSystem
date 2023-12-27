@@ -63,8 +63,11 @@ jobs:
   
     - name: Push tag
       run: |
-        git tag ${{ env.CURRENT_TAG }}
-        git push origin ${{ env.CURRENT_TAG }}
+        git tag ${{ vars.CURRENT_TAG }}
+        git push origin ${{ vars.CURRENT_TAG }}
+
+    - name: Print Tag
+      run: echo ${{ vars.CURRENT_TAG }}
         
   Release:
     needs: [Build, Test, Tag]
@@ -73,8 +76,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
 
-    - name: Print NextAutomatedTag
-      run: echo ${{ env.CURRENT_TAG }}
+    - name: Print Tag
+      run: echo ${{ vars.CURRENT_TAG }}
       
     - name: Create or Update Release
       id: create_release
@@ -82,8 +85,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
-        tag_name: ${{ env.CURRENT_TAG }}
-        release_name: Release ${{ env.CURRENT_TAG }}
+        tag_name: ${{ vars.CURRENT_TAG }}
+        release_name: Release ${{ vars.CURRENT_TAG }}
         draft: false
         prerelease: false
 
