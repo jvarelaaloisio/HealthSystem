@@ -50,7 +50,7 @@ jobs:
       uses: actions/checkout@v4.1.1
 
     - name: Print Tag
-      run: echo ${{env.CURRENT_TAG }}
+      run: echo "Releasing tag: ${{env.CURRENT_TAG }}"
       
     - name: Create or Update Release
       id: create_release
