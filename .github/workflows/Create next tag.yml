@@ -1,0 +1,29 @@
+name: Create next tag
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+jobs:
+  CreateTag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+  
+    - name: Get latest release tag
+      id: get_tag
+      run: |
+        echo "CURRENT_TAG=$(curl --silent \"https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest\" | jq -r .tag_name)" >> $GITHUB_ENV
+  
+    - name: Update tag
+      id: update_tag
+      run: |
+        echo "CURRENT_TAG=$(echo $CURRENT_TAG | awk 'BEGIN{FS=OFS=\".\"} {$NF++; print}')" >> $GITHUB_ENV
+  
+    - name: Push tag
+      run: |
+        git tag ${{ env.CURRENT_TAG }}
+        git push origin ${{ env.CURRENT_TAG }}
+
+    - name: Print Tag
+      run: echo ${{ env.CURRENT_TAG }}
