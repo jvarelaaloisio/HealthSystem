@@ -71,8 +71,13 @@ jobs:
   
     - name: Push tag
       run: |
-        git tag ${{ env.CURRENT_TAG }}
-        git push origin ${{ env.CURRENT_TAG }}
+        if ! git rev-parse ${{ env.CURRENT_TAG }} >/dev/null 2>&1; then
+          git tag ${{ env.CURRENT_TAG }}
+          git push origin ${{ env.CURRENT_TAG }}
+        else
+          echo "Tag ${{ env.CURRENT_TAG }} already exists"
+        fi
+      
 
     - name: Print Tag
       run: echo "new tag is ${{ env.CURRENT_TAG }}"
