@@ -1,8 +1,6 @@
 name: Create next tag
 on:
   workflow_dispatch: {}
-  push:
-    branches: [ main ]
 jobs:
   CreateTag:
     runs-on: ubuntu-latest
