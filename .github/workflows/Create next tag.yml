@@ -19,7 +19,7 @@ jobs:
     - name: Update tag
       id: update_tag
       run: |
-        echo "CURRENT_TAG=$(echo $CURRENT_TAG | awk 'BEGIN{FS=OFS=\".\"} {$NF++; print}')" >> $GITHUB_ENV
+        echo "CURRENT_TAG=$(echo $CURRENT_TAG | awk 'BEGIN{FS=OFS="."}{print $(NF-2), $(NF-1),$1+1}')" >> $GITHUB_ENV
   
     - name: Push tag
       run: |
