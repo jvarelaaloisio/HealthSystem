@@ -84,7 +84,12 @@ jobs:
       uses: actions/checkout@v4.1.1
 
     - name: Set env var
-      run: echo "current_tag=${{ needs.CreateTag.outputs.current_tag }}" >> $GITHUB_ENV
+      run: |
+        if [[ -z "${{ needs.CreateTag.outputs.current_tag }}" ]]; then
+          echo "Error: current_tag is empty"
+          exit 1
+        fi
+        echo "current_tag=${{ needs.CreateTag.outputs.current_tag }}" >> $GITHUB_ENV
     
     - name: Print Tag
       run: echo "Releasing tag ${{env.CURRENT_TAG }}"
