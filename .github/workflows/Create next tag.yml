@@ -16,7 +16,7 @@ jobs:
         echo "CURRENT_TAG=$(curl --silent \"https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest\" | jq -r .tag_name)" >> $GITHUB_ENV
     
     - name: Print current tag
-        run: echo "Last tag was: ${{ env.CURRENT_TAG }}"
+        run: echo "Last tag was ${{ env.CURRENT_TAG }}"
 
     - name: Update tag
       id: update_tag
@@ -29,4 +29,4 @@ jobs:
         git push origin ${{ env.CURRENT_TAG }}
 
     - name: Print Tag
-      run: echo "new tag is: ${{ env.CURRENT_TAG }}"
+      run: echo "new tag is ${{ env.CURRENT_TAG }}"
