@@ -7,9 +7,7 @@ on:
 
 jobs:
   Build:
-
     runs-on: windows-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
@@ -43,9 +41,40 @@ jobs:
       run: |
         nuget install NUnit.ConsoleRunner -Version 3.11.1
         ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
-
-  Tag:
+        
+  Release:
     needs: [Build, Test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+
+    - name: Print Tag
+      run: echo ${{ env.CURRENT_TAG }}
+      
+    - name: Create or Update Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      with:
+        tag_name: ${{ env.CURRENT_TAG }}
+        release_name: Release ${{ env.CURRENT_TAG }}
+        draft: false
+        prerelease: false
+
+    - name: Upload .dll file
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: Projects/LS/LS/bin/Release/LS.dll
+        asset_name: LS.dll
+        asset_content_type: application/octet-stream
+
+  Set Next Tag:
+    needs: [Release]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -63,39 +92,8 @@ jobs:
   
     - name: Push tag
       run: |
-        git tag ${{ vars.CURRENT_TAG }}
-        git push origin ${{ vars.CURRENT_TAG }}
+        git tag ${{ env.CURRENT_TAG }}
+        git push origin ${{ env.CURRENT_TAG }}
 
     - name: Print Tag
-      run: echo ${{ vars.CURRENT_TAG }}
-        
-  Release:
-    needs: [Build, Test, Tag]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.1.1
-
-    - name: Print Tag
-      run: echo ${{ vars.CURRENT_TAG }}
-      
-    - name: Create or Update Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-      with:
-        tag_name: ${{ vars.CURRENT_TAG }}
-        release_name: Release ${{ vars.CURRENT_TAG }}
-        draft: false
-        prerelease: false
-
-    - name: Upload .dll file
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Projects/LS/LS/bin/Release/LS.dll
-        asset_name: LS.dll
-        asset_content_type: application/octet-stream
+      run: echo ${{ env.CURRENT_TAG }}
