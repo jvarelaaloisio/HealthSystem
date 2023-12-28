@@ -91,11 +91,13 @@ jobs:
 
     - name: Set env var
       run: |
-        if [[ -z "${{ env.current_tag }}" ]]; then
+        current_tag=$(cat $GITHUB_ENV_FILE | grep current_tag | cut -d'=' -f2)
+        if [[ -z "$current_tag" ]]; then
           echo "Error: current_tag is empty"
           exit 1
         fi
-        echo "current_tag=${{ env.current_tag }}" >> $GITHUB_ENV
+        echo "current_tag=$current_tag" >> $GITHUB_ENV
+    
     
     - name: Print Tag
       run: echo "Releasing tag ${{env.CURRENT_TAG }}"
