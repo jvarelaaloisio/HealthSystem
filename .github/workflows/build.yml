@@ -63,7 +63,7 @@ jobs:
       run: echo "Last tag was ${{ env.CURRENT_TAG }}"
 
     - name: Update tag
-      id: update_tags
+      id: update_tag
       run: |
         echo "CURRENT_TAG=$(echo $CURRENT_TAG | awk 'BEGIN{FS=OFS="."}{print $(NF-2), $(NF-1),$1+1}')" >> $GITHUB_ENV
         echo "::set-output name=current_tag::$CURRENT_TAG"
