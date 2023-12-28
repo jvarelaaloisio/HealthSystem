@@ -68,10 +68,10 @@ jobs:
         CURRENT_TAG=$(echo $CURRENT_TAG | awk 'BEGIN{FS=OFS="."}{print $(NF-2), $(NF-1),$NF+1}')
         echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
         echo "current_tag=$CURRENT_TAG" >> $GITHUB_ENV
-    
   
     - name: Push tag
       run: |
+        git fetch --tags
         if ! git rev-parse ${{ env.CURRENT_TAG }} >/dev/null 2>&1; then
           git tag ${{ env.CURRENT_TAG }}
           git push origin ${{ env.CURRENT_TAG }}
