@@ -73,7 +73,7 @@ jobs:
         asset_name: LS.dll
         asset_content_type: application/octet-stream
 
-  Set Next Tag:
+  SetNextTag:
     needs: [Release]
     runs-on: ubuntu-latest
     steps:
