@@ -11,8 +11,13 @@ jobs:
     - name: Get latest release tag
       id: get_tag
       run: |
-        echo "CURRENT_TAG=$(curl --silent \"https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest\" | jq -r .tag_name)" >> $GITHUB_ENV
-    
+        CURRENT_TAG=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | jq -r .tag_name)
+        if [[ -z "$CURRENT_TAG" ]]; then
+          echo "Failed to fetch the latest release tag"
+          exit 1
+        fi
+        echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
+
     - name: Print current tag
       run: echo "Last tag was ${{ env.CURRENT_TAG }}"
 
