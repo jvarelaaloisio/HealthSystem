@@ -30,7 +30,7 @@ jobs:
       run: msbuild /p:Configuration=Release Projects/LS/LS.sln
 
   TestPR:
-    needs: [Build]
+    needs: [BuildPR]
     runs-on: windows-latest
     steps:
     - name: Checkout code
