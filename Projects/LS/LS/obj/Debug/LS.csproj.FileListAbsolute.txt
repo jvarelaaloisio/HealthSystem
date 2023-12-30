@@ -10,3 +10,9 @@ K:\Documents\1_ TAREA\1_DaVinci\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\L
 K:\Documents\1_ TAREA\1_DaVinci\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\obj\Debug\LS.csproj.CoreCompileInputs.cache
 K:\Documents\1_ TAREA\1_DaVinci\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\obj\Debug\LS.dll
 K:\Documents\1_ TAREA\1_DaVinci\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS\obj\Debug\LS.pdb
+C:\git\packages\LifeSystem\Projects\LS\LS\bin\Debug\LS.dll
+C:\git\packages\LifeSystem\Projects\LS\LS\bin\Debug\LS.pdb
+C:\git\packages\LifeSystem\Projects\LS\LS\obj\Debug\LS.csproj.AssemblyReference.cache
+C:\git\packages\LifeSystem\Projects\LS\LS\obj\Debug\LS.csproj.CoreCompileInputs.cache
+C:\git\packages\LifeSystem\Projects\LS\LS\obj\Debug\LS.dll
+C:\git\packages\LifeSystem\Projects\LS\LS\obj\Debug\LS.pdb

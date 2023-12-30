@@ -20,3 +20,14 @@ K:\Documents\1_ TAREA\1_DaVinci\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\L
 K:\Documents\1_ TAREA\1_DaVinci\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS.UnitTests\obj\Debug\LS.UnitTests.csproj.CopyComplete
 K:\Documents\1_ TAREA\1_DaVinci\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS.UnitTests\obj\Debug\LS.UnitTests.dll
 K:\Documents\1_ TAREA\1_DaVinci\0_Packages_DLL\Unity\Owned\LifeSystem\Projects\LS\LS.UnitTests\obj\Debug\LS.UnitTests.pdb
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\bin\Debug\LS.UnitTests.dll
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\bin\Debug\LS.UnitTests.pdb
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\bin\Debug\LS.dll
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\bin\Debug\nunit.framework.dll
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\bin\Debug\LS.pdb
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\bin\Debug\nunit.framework.xml
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\obj\Debug\LS.UnitTests.csproj.AssemblyReference.cache
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\obj\Debug\LS.UnitTests.csproj.CoreCompileInputs.cache
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\obj\Debug\LS.UnitTests.csproj.CopyComplete
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\obj\Debug\LS.UnitTests.dll
+C:\git\packages\LifeSystem\Projects\LS\LS.UnitTests\obj\Debug\LS.UnitTests.pdb
