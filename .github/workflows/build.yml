@@ -41,16 +41,47 @@ jobs:
       run: |
         nuget install NUnit.ConsoleRunner -Version 3.11.1
         ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
-        
-  Release:
-    needs: [Build, Test]
+
+  CreateTagAndRelease:
+    needs: [Test]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
+  
+    - name: Get latest release tag
+      id: get_tag
+      run: |
+        CURRENT_TAG=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | jq -r .tag_name)
+        if [[ -z "$CURRENT_TAG" ]]; then
+          echo "Failed to fetch the latest release tag"
+          exit 1
+        fi
+        echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
+
+    - name: Print current tag
+      run: echo "Last tag was ${{ env.CURRENT_TAG }}"
+
+    - name: Update tag
+      id: update_tag
+      run: |
+        CURRENT_TAG=$(echo $CURRENT_TAG | awk 'BEGIN{FS=OFS="."}{print $(NF-2), $(NF-1),$NF+1}')
+        echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
+        echo "current_tag=$CURRENT_TAG" >> $GITHUB_ENV
+  
+    - name: Push tag
+      run: |
+        git fetch --tags
+        if ! git rev-parse ${{ env.CURRENT_TAG }} >/dev/null 2>&1; then
+          git tag ${{ env.CURRENT_TAG }}
+          git push origin ${{ env.CURRENT_TAG }}
+        else
+          echo "Tag ${{ env.CURRENT_TAG }} already exists"
+        fi
+      
 
     - name: Print Tag
-      run: echo "Releasing tag ${{vars.CURRENT_TAG }}"
+      run: echo "new tag is ${{ env.CURRENT_TAG }}"
       
     - name: Create or Update Release
       id: create_release
@@ -58,8 +89,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
-        tag_name: ${{ vars.CURRENT_TAG }}
-        release_name: Release ${{ vars.CURRENT_TAG }}
+        tag_name: ${{ env.CURRENT_TAG }}
+        release_name: Release ${{ env.CURRENT_TAG }}
         draft: false
         prerelease: false
 
