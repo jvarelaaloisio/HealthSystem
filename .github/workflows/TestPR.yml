@@ -21,8 +21,6 @@ jobs:
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.3.1
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.3.1
 
     - name: Restore NuGet packages
       run: nuget restore Projects/LS/LS.sln
