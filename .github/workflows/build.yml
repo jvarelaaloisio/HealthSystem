@@ -42,7 +42,7 @@ jobs:
         nuget install NUnit.ConsoleRunner -Version 3.11.1
         ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
 
-  CreateTag:
+  CreateTagAndRelease:
     needs: [Test]
     runs-on: ubuntu-latest
     steps:
@@ -82,26 +82,6 @@ jobs:
 
     - name: Print Tag
       run: echo "new tag is ${{ env.CURRENT_TAG }}"
-      
-  Release:
-    needs: [CreateTag]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.1.1
-
-    - name: Set env var
-      run: |
-        current_tag=$(cat $GITHUB_ENV_FILE | grep current_tag | cut -d'=' -f2)
-        if [[ -z "$current_tag" ]]; then
-          echo "Error: current_tag is empty"
-          exit 1
-        fi
-        echo "current_tag=$current_tag" >> $GITHUB_ENV
-    
-    
-    - name: Print Tag
-      run: echo "Releasing tag ${{env.CURRENT_TAG }}"
       
     - name: Create or Update Release
       id: create_release
