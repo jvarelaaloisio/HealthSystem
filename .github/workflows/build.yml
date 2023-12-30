@@ -1,0 +1,105 @@
+name: Build and Release
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+      
+    - name: Cache NuGet packages
+      uses: actions/cache@v3.3.2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3.1
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3.1
+
+    - name: Restore NuGet packages
+      run: nuget restore Projects/LS/LS.sln
+
+    - name: Build
+      run: msbuild /p:Configuration=Release Projects/LS/LS.sln
+
+  Test:
+    needs: [Build]
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+    - name: Run Tests
+      run: |
+        nuget install NUnit.ConsoleRunner -Version 3.11.1
+        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
+
+  CreateTagAndRelease:
+    needs: [Test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+  
+    - name: Get latest release tag
+      id: get_tag
+      run: |
+        CURRENT_TAG=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | jq -r .tag_name)
+        if [[ -z "$CURRENT_TAG" ]]; then
+          echo "Failed to fetch the latest release tag"
+          exit 1
+        fi
+        echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
+
+    - name: Print current tag
+      run: echo "Last tag was ${{ env.CURRENT_TAG }}"
+
+    - name: Update tag
+      id: update_tag
+      run: |
+        CURRENT_TAG=$(echo $CURRENT_TAG | awk 'BEGIN{FS=OFS="."}{print $(NF-2), $(NF-1),$NF+1}')
+        echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
+        echo "current_tag=$CURRENT_TAG" >> $GITHUB_ENV
+  
+    - name: Push tag
+      run: |
+        git fetch --tags
+        if ! git rev-parse ${{ env.CURRENT_TAG }} >/dev/null 2>&1; then
+          git tag ${{ env.CURRENT_TAG }}
+          git push origin ${{ env.CURRENT_TAG }}
+        else
+          echo "Tag ${{ env.CURRENT_TAG }} already exists"
+        fi
+      
+
+    - name: Print Tag
+      run: echo "new tag is ${{ env.CURRENT_TAG }}"
+      
+    - name: Create or Update Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      with:
+        tag_name: ${{ env.CURRENT_TAG }}
+        release_name: Release ${{ env.CURRENT_TAG }}
+        draft: false
+        prerelease: false
+
+    - name: Upload .dll file
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: Projects/LS/LS/bin/Release/LS.dll
+        asset_name: LS.dll
+        asset_content_type: application/octet-stream
