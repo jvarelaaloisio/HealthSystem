@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  Build:
+  BuildPR:
     runs-on: windows-latest
     steps:
     - name: Checkout code
@@ -30,7 +30,7 @@ jobs:
     - name: Build
       run: msbuild /p:Configuration=Release Projects/LS/LS.sln
 
-  Test:
+  TestPR:
     needs: [Build]
     runs-on: windows-latest
     steps:
