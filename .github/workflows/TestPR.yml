@@ -24,10 +24,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.3.1
 
     - name: Restore NuGet packages
-      run: nuget restore Projects/LS/LS.sln
+      run: nuget restore Projects/HealthSystem.sln
 
     - name: Build
-      run: msbuild /p:Configuration=Release Projects/LS/LS.sln
+      run: msbuild /p:Configuration=Release Projects/HealthSystem.sln
 
   TestPR:
     needs: [BuildPR]
@@ -38,4 +38,4 @@ jobs:
     - name: Run Tests
       run: |
         nuget install NUnit.ConsoleRunner -Version 3.11.1
-        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
+        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/HealthSystem.UnitTests/bin/Release/HealthSystem.UnitTests.dll
