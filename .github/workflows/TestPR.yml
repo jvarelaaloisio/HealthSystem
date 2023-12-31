@@ -36,9 +36,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
 
-    - name: Build
-      run: msbuild /p:Configuration=Release Projects/HealthSystem.UnitTests.sln
-      
     - name: Run Tests
       run: |
         nuget install NUnit.ConsoleRunner -Version 3.11.1
