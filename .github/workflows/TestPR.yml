@@ -29,12 +29,24 @@ jobs:
     - name: Build
       run: msbuild /p:Configuration=Release Projects/HealthSystem.sln
 
+    - name: Publish build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-artifacts
+        path: Projects/HealthSystem.UnitTests/bin/Release/
+
   TestPR:
     needs: [BuildPR]
     runs-on: windows-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+        path: Projects/HealthSystem.UnitTests/bin/Release/
 
     - name: Run Tests
       run: |
