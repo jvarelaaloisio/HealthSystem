@@ -25,34 +25,34 @@ namespace HealthSystem.UnitTests
 		[Test]
 		public void Constructor_GivenMaxHealthPoints_HasSameMaxHealthPoints()
 		{
-			Assert.Equals(MaxHP, _health.MaxHP);
+			AssertThatHealthPointsDontOverflow();
 		}
 
 		[Test]
 		public void Constructor_GivenOnlyMaxHealthPoints_HasSameHealthPoints()
 		{
-			Assert.Equals(MaxHP, _health.HP);
+			AssertThatHealthPointsDontOverflow();
 		}
 
 		[Test]
 		public void Constructor_GivenOverflowingHealthPoints_HealthPointsAreClamped()
 		{
 			_health = new Health(MaxHP, OverflowingHP);
-			Assert.Equals(MaxHP, _health.HP);
+			AssertThatHealthPointsDontOverflow();
 		}
 
 		[Test]
 		public void Constructor_GivenOverflowingHealthPointsAndNotAllowedToOverflow_HealthPointsDontOverflow()
 		{
 			_health = new Health(MaxHP, OverflowingHP, false);
-			HealthPointsDontOverflow();
+			AssertThatHealthPointsDontOverflow();
 		}
 
 		[Test]
 		public void Constructor_GivenOverflowingHealthPointsAndIsAllowedToOverflow_HealthPointsOverflow()
 		{
 			_health = new Health(MaxHP, OverflowingHP, true);
-			HealthPointsOverflow();
+			AssertThatHealthPointsOverflow();
 		}
 
 		#endregion
@@ -64,7 +64,7 @@ namespace HealthSystem.UnitTests
 		{
 			GivenNotAllowedToOverflow();
 			_health.HP = OverflowingHP;
-			HealthPointsDontOverflow();
+			AssertThatHealthPointsDontOverflow();
 		}
 
 		[Test]
@@ -72,7 +72,7 @@ namespace HealthSystem.UnitTests
 		{
 			GivenAllowedToOverflow();
 			_health.HP = OverflowingHP;
-			HealthPointsOverflow();
+			AssertThatHealthPointsOverflow();
 		}
 
 		#endregion
@@ -84,7 +84,7 @@ namespace HealthSystem.UnitTests
 		{
 			const int expectedHealthPoints = MaxHP - NotKillingDamage;
 			_health.TakeDamage(NotKillingDamage);
-			Assert.Equals(expectedHealthPoints, _health.HP);
+			Assert.That(expectedHealthPoints, Is.EqualTo(_health.HP));
 		}
 		[Test]
 		public void TakeDamage_GivenTakesDamage_OnDamageIsCalled()
@@ -109,15 +109,15 @@ namespace HealthSystem.UnitTests
 				actualAfter = after;
 			};
 			_health.TakeDamage(NotKillingDamage);
-			Assert.Equals(correctBefore, actualBefore);
-			Assert.Equals(correctAfter, actualAfter);
+			Assert.That(correctBefore, Is.EqualTo(actualBefore));
+			Assert.That(correctAfter, Is.EqualTo(actualAfter));
 		}
 
 		[Test]
 		public void TakeDamage_GivenKillingDamage_HealthPointsAreZero()
 		{
 			_health.TakeDamage(OverkillDamage);
-			Assert.Equals(0, _health.HP);
+			Assert.That(_health.HP, Is.Zero);
 		}
 
 		[Test]
@@ -149,7 +149,7 @@ namespace HealthSystem.UnitTests
 				_health.HP = MinimumNonZeroHP;
 				const int expectedHealthPoints = MinimumNonZeroHP + NotOverflowingHeal;
 				_health.Heal(NotOverflowingHeal);
-				Assert.Equals(expectedHealthPoints, _health.HP);
+				Assert.That(expectedHealthPoints, Is.EqualTo(_health.HP));
 			}
 			
 			[Test]
@@ -181,8 +181,8 @@ namespace HealthSystem.UnitTests
 				
 				_health.Heal(healingValue);
 				
-				Assert.Equals(correctBefore, actualBefore);
-				Assert.Equals(correctAfter, actualAfter);
+				Assert.That(correctBefore, Is.EqualTo(actualBefore));
+				Assert.That(correctAfter, Is.EqualTo(actualAfter));
 			}
 			
 			[Test]
@@ -190,7 +190,7 @@ namespace HealthSystem.UnitTests
 			{
 				GivenAllowedToOverflow();
 				_health.Heal(OverflowingHeal);
-				Assert.Equals(MaxHP + OverflowingHeal, _health.HP);
+				Assert.That(MaxHP + OverflowingHeal, Is.EqualTo(_health.HP));
 			}
 
 			[Test]
@@ -198,7 +198,7 @@ namespace HealthSystem.UnitTests
 			{
 				GivenNotAllowedToOverflow();
 				_health.Heal(OverflowingHeal);
-				HealthPointsDontOverflow();
+				AssertThatHealthPointsDontOverflow();
 			}
 
 		#endregion
@@ -219,14 +219,14 @@ namespace HealthSystem.UnitTests
 
 		#region Then
 
-		private void HealthPointsOverflow()
+		private void AssertThatHealthPointsOverflow()
 		{
-			Assert.Equals(OverflowingHP, _health.HP);
+			Assert.That(OverflowingHP, Is.EqualTo(_health.HP));
 		}
 
-		private void HealthPointsDontOverflow()
+		private void AssertThatHealthPointsDontOverflow()
 		{
-			Assert.Equals(MaxHP, _health.HP);
+			Assert.That(MaxHP, Is.EqualTo(_health.HP));
 		}
 
 		#endregion
