@@ -34,6 +34,9 @@ jobs:
       with:
         name: build-artifacts
         path: Projects/HealthSystem.UnitTests/bin/Release/
+        run: |
+          echo "Directory contents before publishing:"
+          ls Projects/HealthSystem.UnitTests/bin/Release/
 
   TestPR:
     needs: [BuildPR]
@@ -47,6 +50,9 @@ jobs:
       with:
         name: build-artifacts
         path: Projects/HealthSystem.UnitTests/bin/Release/
+        run: |
+          echo "Directory contents after downloading:"
+          ls Projects/HealthSystem.UnitTests/bin/Release/
 
     - name: Run Tests
       run: |
