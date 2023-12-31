@@ -25,34 +25,34 @@ namespace HealthSystem.UnitTests
 		[Test]
 		public void Constructor_GivenMaxHealthPoints_HasSameMaxHealthPoints()
 		{
-			AssertHealthPointsEqualMaxHP();
+			Assert.Equals(MaxHP, _health.MaxHP);
 		}
 
 		[Test]
 		public void Constructor_GivenOnlyMaxHealthPoints_HasSameHealthPoints()
 		{
-			AssertHealthPointsEqualMaxHP();
+			Assert.Equals(MaxHP, _health.HP);
 		}
 
 		[Test]
 		public void Constructor_GivenOverflowingHealthPoints_HealthPointsAreClamped()
 		{
 			_health = new Health(MaxHP, OverflowingHP);
-			AssertHealthPointsEqualMaxHP();
+			Assert.Equals(MaxHP, _health.HP);
 		}
 
 		[Test]
 		public void Constructor_GivenOverflowingHealthPointsAndNotAllowedToOverflow_HealthPointsDontOverflow()
 		{
 			_health = new Health(MaxHP, OverflowingHP, false);
-			AssertHealthPointsEqualMaxHP();
+			HealthPointsDontOverflow();
 		}
 
 		[Test]
 		public void Constructor_GivenOverflowingHealthPointsAndIsAllowedToOverflow_HealthPointsOverflow()
 		{
 			_health = new Health(MaxHP, OverflowingHP, true);
-			AssertHealthPointsOverflow();
+			HealthPointsOverflow();
 		}
 
 		#endregion
@@ -64,7 +64,7 @@ namespace HealthSystem.UnitTests
 		{
 			GivenNotAllowedToOverflow();
 			_health.HP = OverflowingHP;
-			AssertHealthPointsEqualMaxHP();
+			HealthPointsDontOverflow();
 		}
 
 		[Test]
@@ -72,7 +72,7 @@ namespace HealthSystem.UnitTests
 		{
 			GivenAllowedToOverflow();
 			_health.HP = OverflowingHP;
-			AssertHealthPointsOverflow();
+			HealthPointsOverflow();
 		}
 
 		#endregion
@@ -84,7 +84,7 @@ namespace HealthSystem.UnitTests
 		{
 			const int expectedHealthPoints = MaxHP - NotKillingDamage;
 			_health.TakeDamage(NotKillingDamage);
-			Assert.That(expectedHealthPoints, Is.EqualTo(_health.HP));
+			Assert.Equals(expectedHealthPoints, _health.HP);
 		}
 		[Test]
 		public void TakeDamage_GivenTakesDamage_OnDamageIsCalled()
@@ -109,15 +109,15 @@ namespace HealthSystem.UnitTests
 				actualAfter = after;
 			};
 			_health.TakeDamage(NotKillingDamage);
-			Assert.That(correctBefore, Is.EqualTo(actualBefore));
-			Assert.That(correctAfter, Is.EqualTo(actualAfter));
+			Assert.Equals(correctBefore, actualBefore);
+			Assert.Equals(correctAfter, actualAfter);
 		}
 
 		[Test]
 		public void TakeDamage_GivenKillingDamage_HealthPointsAreZero()
 		{
 			_health.TakeDamage(OverkillDamage);
-			Assert.That(0, Is.EqualTo(_health.HP));
+			Assert.Equals(0, _health.HP);
 		}
 
 		[Test]
@@ -149,7 +149,7 @@ namespace HealthSystem.UnitTests
 				_health.HP = MinimumNonZeroHP;
 				const int expectedHealthPoints = MinimumNonZeroHP + NotOverflowingHeal;
 				_health.Heal(NotOverflowingHeal);
-				Assert.That(expectedHealthPoints, Is.EqualTo(_health.HP));
+				Assert.Equals(expectedHealthPoints, _health.HP);
 			}
 			
 			[Test]
@@ -181,8 +181,8 @@ namespace HealthSystem.UnitTests
 				
 				_health.Heal(healingValue);
 				
-				Assert.That(correctBefore, Is.EqualTo(actualBefore));
-				Assert.That(correctAfter, Is.EqualTo(actualAfter));
+				Assert.Equals(correctBefore, actualBefore);
+				Assert.Equals(correctAfter, actualAfter);
 			}
 			
 			[Test]
@@ -190,7 +190,7 @@ namespace HealthSystem.UnitTests
 			{
 				GivenAllowedToOverflow();
 				_health.Heal(OverflowingHeal);
-				Assert.That(MaxHP + OverflowingHeal, Is.EqualTo(_health.HP));
+				Assert.Equals(MaxHP + OverflowingHeal, _health.HP);
 			}
 
 			[Test]
@@ -198,7 +198,7 @@ namespace HealthSystem.UnitTests
 			{
 				GivenNotAllowedToOverflow();
 				_health.Heal(OverflowingHeal);
-				AssertHealthPointsEqualMaxHP();
+				HealthPointsDontOverflow();
 			}
 
 		#endregion
@@ -219,14 +219,14 @@ namespace HealthSystem.UnitTests
 
 		#region Then
 
-		private void AssertHealthPointsOverflow()
+		private void HealthPointsOverflow()
 		{
-			Assert.That(OverflowingHP, Is.EqualTo(_health.HP));
+			Assert.Equals(OverflowingHP, _health.HP);
 		}
 
-		private void AssertHealthPointsEqualMaxHP()
+		private void HealthPointsDontOverflow()
 		{
-			Assert.That(MaxHP, Is.EqualTo(_health.HP));
+			Assert.Equals(MaxHP, _health.HP);
 		}
 
 		#endregion
