@@ -6,19 +6,55 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  BuildPR:
+    runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+      
+    - name: Cache NuGet packages
+      uses: actions/cache@v3.3.2
       with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: BuildPR
-      run: dotnet build --no-restore
-    - name: TestPR
-      run: dotnet test --no-build --verbosity normal
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3.1
+
+    - name: Restore NuGet packages
+      run: nuget restore Projects/HealthSystem.sln
+
+    - name: Build
+      run: msbuild /p:Configuration=Release Projects/HealthSystem.sln
+
+    - name: Publish build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-artifacts
+        path: Projects/HealthSystem.UnitTests/bin/Release/
+        run: |
+          echo "Directory contents before publishing:"
+          ls Projects/HealthSystem.UnitTests/bin/Release/
+
+  TestPR:
+    needs: [BuildPR]
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+        path: Projects/HealthSystem.UnitTests/bin/Release/
+        run: |
+          echo "Directory contents after downloading:"
+          ls Projects/HealthSystem.UnitTests/bin/Release/
+
+    - name: Run Tests
+      run: |
+        nuget install NUnit.ConsoleRunner -Version 4.0.1
+        ./NUnit.ConsoleRunner.4.0.1/tools/nunit3-console.exe Projects/HealthSystem.UnitTests/bin/Release/VarelaAloisio.HealthSystem.UnitTests.dll        
