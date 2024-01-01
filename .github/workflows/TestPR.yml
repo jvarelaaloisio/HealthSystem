@@ -56,5 +56,5 @@ jobs:
 
     - name: Run Tests
       run: |
-        nuget install NUnit.ConsoleRunner -Version 3.14.0
-        ./NUnit.ConsoleRunner.3.14.0/tools/nunit3-console.exe Projects/HealthSystem.UnitTests/bin/Release/VarelaAloisio.HealthSystem.UnitTests.dll        
+        nuget install NUnit.ConsoleRunner -Version 3.11.1
+        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/HealthSystem.UnitTests/bin/Release/VarelaAloisio.HealthSystem.UnitTests.dll        
