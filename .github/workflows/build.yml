@@ -29,6 +29,15 @@ jobs:
     - name: Build
       run: msbuild /p:Configuration=Release Projects/HealthSystem.sln
 
+    - name: Publish build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-artifacts
+        path: Projects/HealthSystem.UnitTests/bin/Release/
+        run: |
+          echo "Directory contents before publishing:"
+          ls Projects/HealthSystem.UnitTests/bin/Release/
+
   Test:
     needs: [Build]
     runs-on: windows-latest
@@ -36,13 +45,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
 
-    - name: Build Tests Project
-      run: msbuild /p:Configuration=Release Projects/HealthSystem.UnitTests.sln
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+        path: Projects/HealthSystem.UnitTests/bin/Release/
+        run: |
+          echo "Directory contents after downloading:"
+          ls Projects/HealthSystem.UnitTests/bin/Release/
 
     - name: Run Tests
       run: |
         nuget install NUnit.ConsoleRunner -Version 3.11.1
-        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/HealthSystem.UnitTests/bin/Release/HealthSystem.UnitTests.dll
+        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/HealthSystem.UnitTests/bin/Release/VarelaAloisio.HealthSystem.UnitTests.dll
 
   CreateTagAndRelease:
     needs: [Test]
