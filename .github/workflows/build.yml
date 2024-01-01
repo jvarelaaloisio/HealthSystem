@@ -22,14 +22,12 @@ jobs:
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.3.1
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.3.1
 
     - name: Restore NuGet packages
-      run: nuget restore Projects/LS/LS.sln
+      run: nuget restore Projects/HealthSystem.sln
 
     - name: Build
-      run: msbuild /p:Configuration=Release Projects/LS/LS.sln
+      run: msbuild /p:Configuration=Release Projects/HealthSystem.sln
 
   Test:
     needs: [Build]
@@ -37,10 +35,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
+
+    - name: Build Tests Project
+      run: msbuild /p:Configuration=Release Projects/HealthSystem.UnitTests.sln
+
     - name: Run Tests
       run: |
         nuget install NUnit.ConsoleRunner -Version 3.11.1
-        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/LS/LS.UnitTests/bin/Release/LS.UnitTests.dll
+        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/HealthSystem.UnitTests/bin/Release/HealthSystem.UnitTests.dll
 
   CreateTagAndRelease:
     needs: [Test]
@@ -100,6 +102,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Projects/LS/LS/bin/Release/LS.dll
-        asset_name: LS.dll
+        asset_path: Projects/HealthSystem/bin/Release/HealthSystem.dll
+        asset_name: HealthSystem.dll
         asset_content_type: application/octet-stream
