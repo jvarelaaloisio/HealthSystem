@@ -33,6 +33,15 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: build-artifacts
+        path: Projects/HealthSystem/bin/Release/
+        run: |
+          echo "Directory contents before publishing:"
+          ls Projects/HealthSystem/bin/Release/
+
+    - name: Publish test artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-artifacts
         path: Projects/HealthSystem.UnitTests/bin/Release/
         run: |
           echo "Directory contents before publishing:"
@@ -95,7 +104,6 @@ jobs:
         else
           echo "Tag ${{ env.CURRENT_TAG }} already exists"
         fi
-      
 
     - name: Print Tag
       run: echo "new tag is ${{ env.CURRENT_TAG }}"
