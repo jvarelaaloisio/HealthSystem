@@ -61,7 +61,7 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v2
       with:
-        name: build-artifacts
+        name: test-artifacts
         path: Projects/HealthSystem.UnitTests/bin/Release/
 
     - name: Log test artifacts
