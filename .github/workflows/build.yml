@@ -29,23 +29,27 @@ jobs:
     - name: Build
       run: msbuild /p:Configuration=Release Projects/HealthSystem.sln
 
-    - name: Publish build artifacts
+    - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
         name: build-artifacts
         path: Projects/HealthSystem/bin/Release/
-        run: |
-          echo "Directory contents before publishing:"
-          ls Projects/HealthSystem/bin/Release/
 
-    - name: Publish test artifacts
+    - name: Log build artifacts
+      run: |
+        echo "Directory contents for HealthSystem bin/Release:"
+        ls Projects/HealthSystem/bin/Release/
+
+    - name: Upload test artifacts
       uses: actions/upload-artifact@v2
       with:
         name: test-artifacts
         path: Projects/HealthSystem.UnitTests/bin/Release/
-        run: |
-          echo "Directory contents before publishing:"
-          ls Projects/HealthSystem.UnitTests/bin/Release/
+
+    - name: Log test artifacts
+      run: |
+        echo "Directory contents for HealthSystem.UnitTests bin/Release:"
+        ls Projects/HealthSystem.UnitTests/bin/Release/
 
   Test:
     needs: [Build]
