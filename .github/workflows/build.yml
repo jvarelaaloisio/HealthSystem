@@ -63,9 +63,11 @@ jobs:
       with:
         name: build-artifacts
         path: Projects/HealthSystem.UnitTests/bin/Release/
-        run: |
-          echo "Directory contents after downloading:"
-          ls Projects/HealthSystem.UnitTests/bin/Release/
+
+    - name: Log test artifacts
+      run: |
+        echo "Directory contents for HealthSystem.UnitTests bin/Release:"
+        ls Projects/HealthSystem.UnitTests/bin/Release/
 
     - name: Run Tests
       run: |
@@ -122,6 +124,17 @@ jobs:
         release_name: Release ${{ env.CURRENT_TAG }}
         draft: false
         prerelease: false
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifacts
+        path: Projects/HealthSystem/bin/Release/
+
+    - name: Log build artifacts
+      run: |
+        echo "Directory contents for HealthSystem bin/Release:"
+        ls Projects/HealthSystem/bin/Release/
 
     - name: Upload .dll file
       uses: actions/upload-release-asset@v1
