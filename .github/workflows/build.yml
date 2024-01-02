@@ -58,11 +58,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
 
-    - name: Download build artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: build-artifacts
-        path: Projects/HealthSystem.UnitTests/bin/Release/
+    - name: Build
+      run: msbuild /p:Configuration=Release Projects/HealthSystem.UnitTests.sln
 
     - name: Log test artifacts
       run: |
