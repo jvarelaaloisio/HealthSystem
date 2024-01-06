@@ -1,0 +1,3 @@
+[submodule "UnityPackage-Project/Assets"]
+	path = UnityPackage-Project/Assets
+	url = git@github.com:jvarelaaloisio/HealthSystem-UnityPackage.git
