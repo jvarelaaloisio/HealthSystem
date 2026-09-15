@@ -2,7 +2,6 @@
 
 namespace HealthSystem.UnitTests
 {
-	[TestFixture]
 	public class HealthTests
 	{
 		private const int MaxHP = 10;
