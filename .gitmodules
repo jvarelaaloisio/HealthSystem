@@ -3,4 +3,4 @@
 	url = git@github.com:jvarelaaloisio/HealthSystem-UnityPackage.git
 [submodule "Assets"]
 	path = Assets
-	url = C:\\git\\packages\\HealthSystem\\UnityPackage-Project\\Assets
+url=git@github.com:jvarelaaloisio/HealthSystem-UnityPackage.git
