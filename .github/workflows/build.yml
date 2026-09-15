@@ -7,7 +7,7 @@ on:
 
 jobs:
   Build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
@@ -18,12 +18,10 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
         restore-keys: |
           ${{ runner.os }}-nuget-
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v3
     - name: Restore NuGet packages
       run: dotnet restore Projects/HealthSystem.sln
     - name: Build
-      run: msbuild /p:Configuration=Release Projects/HealthSystem.sln
+      run: dotnet build Projects/HealthSystem.sln -c Release --no-restore
     - name: Upload build artifacts
       uses: actions/upload-artifact@v7
       with:
@@ -45,7 +43,7 @@ jobs:
 
   Test:
     needs: [Build]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
