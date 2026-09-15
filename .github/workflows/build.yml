@@ -10,97 +10,82 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.1
-      
+      uses: actions/checkout@v7
     - name: Cache NuGet packages
-      uses: actions/cache@v3.3.2
+      uses: actions/cache@v6
       with:
         path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
         restore-keys: |
           ${{ runner.os }}-nuget-
-
     - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.3.1
-
+      uses: microsoft/setup-msbuild@v3
     - name: Restore NuGet packages
-      run: nuget restore Projects/HealthSystem.sln
-
+      run: dotnet restore Projects/HealthSystem.sln
     - name: Build
       run: msbuild /p:Configuration=Release Projects/HealthSystem.sln
-
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v7
       with:
         name: build-artifacts
         path: Projects/HealthSystem/bin/Release/
-
     - name: Log build artifacts
       run: |
         echo "Directory contents for HealthSystem bin/Release:"
-        ls Projects/HealthSystem/bin/Release/
-
+        ls -R Projects/HealthSystem/bin/Release/
     - name: Upload test artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v7
       with:
         name: test-artifacts
         path: Projects/HealthSystem.UnitTests/bin/Release/
-
     - name: Log test artifacts
       run: |
         echo "Directory contents for HealthSystem.UnitTests bin/Release:"
-        ls Projects/HealthSystem.UnitTests/bin/Release/
+        ls -R Projects/HealthSystem.UnitTests/bin/Release/
 
   Test:
     needs: [Build]
     runs-on: windows-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.1
-
-    - name: Download build artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: test-artifacts
-        path: Projects/HealthSystem.UnitTests/bin/Release/
-
-    - name: Log test artifacts
-      run: |
-        echo "Directory contents for HealthSystem.UnitTests bin/Release:"
-        ls Projects/HealthSystem.UnitTests/bin/Release/
-
+      uses: actions/checkout@v7
+    - name: Restore NuGet packages
+      run: dotnet restore Projects/HealthSystem.sln
     - name: Run Tests
-      run: |
-        nuget install NUnit.ConsoleRunner -Version 3.11.1
-        ./NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe Projects/HealthSystem.UnitTests/bin/Release/VarelaAloisio.HealthSystem.UnitTests.dll
+      run: dotnet test Projects/HealthSystem.UnitTests/HealthSystem.UnitTests.csproj -c Release --no-restore
 
   CreateTagAndRelease:
     needs: [Test]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4.1.1
-  
+      uses: actions/checkout@v7
     - name: Get latest release tag
       id: get_tag
       run: |
         CURRENT_TAG=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | jq -r .tag_name)
-        if [[ -z "$CURRENT_TAG" ]]; then
-          echo "Failed to fetch the latest release tag"
+        if [[ -z "$CURRENT_TAG" || "$CURRENT_TAG" == "null" ]]; then
+          echo "::error::Failed to fetch the latest release tag"
           exit 1
         fi
         echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
-
     - name: Print current tag
       run: echo "Last tag was ${{ env.CURRENT_TAG }}"
-
     - name: Update tag
       id: update_tag
       run: |
         CURRENT_TAG=$(echo $CURRENT_TAG | awk 'BEGIN{FS=OFS="."}{print $(NF-2), $(NF-1),$NF+1}')
         echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
         echo "current_tag=$CURRENT_TAG" >> $GITHUB_ENV
-  
+    - name: Download build artifacts
+      uses: actions/download-artifact@v8
+      with:
+        name: build-artifacts
+        path: Projects/HealthSystem/bin/Release/
+    - name: Log build artifacts
+      run: |
+        echo "Directory contents for HealthSystem bin/Release:"
+        ls -R Projects/HealthSystem/bin/Release/
     - name: Push tag
       run: |
         git fetch --tags
@@ -110,13 +95,10 @@ jobs:
         else
           echo "Tag ${{ env.CURRENT_TAG }} already exists"
         fi
-
     - name: Print Tag
       run: echo "new tag is ${{ env.CURRENT_TAG }}"
-      
-    - name: Create or Update Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
+    - name: Create Release and Upload DLL
+      uses: softprops/action-gh-release@v3
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
@@ -124,24 +106,5 @@ jobs:
         release_name: Release ${{ env.CURRENT_TAG }}
         draft: false
         prerelease: false
-
-    - name: Download build artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: build-artifacts
-        path: Projects/HealthSystem/bin/Release/
-
-    - name: Log build artifacts
-      run: |
-        echo "Directory contents for HealthSystem bin/Release:"
-        ls Projects/HealthSystem/bin/Release/
-
-    - name: Upload .dll file
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Projects/HealthSystem/bin/Release/VarelaAloisio.HealthSystem.Runtime.dll
-        asset_name: VarelaAloisio.HealthSystem.Runtime.dll
-        asset_content_type: application/octet-stream
+        update_release: true
+        files: Projects/HealthSystem/bin/Release/netstandard2.0/VarelaAloisio.HealthSystem.Runtime.dll
